@@ -151,12 +151,15 @@
     ];
 
     // 2. INICIALIZAR MAPA
-    const map = L.map('map').setView([-24.894167, -65.470833], 8);
+    const map = L.map('map');
     L.tileLayer('https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png', {
 	  maxZoom: 18,
 	  minZoom: 3,
 	  attribution: '&copy; <a href="https://www.ign.gob.ar/AreaServicios/Argenmap/Introduccion" target="_blank">IGN Argentina - Argenmap</a>'
 	}).addTo(map);
+
+    // Grupo para almacenar todos los marcadores y calcular sus límites
+    const markersGroup = L.featureGroup().addTo(map);
 
     // 3. FUNCIÓN PARA PARSEAR EL INDEX.HTML DE CADA ESTACIÓN
     async function cargarDatosEstacion(estacion) {
@@ -216,8 +219,8 @@
     const grid = document.getElementById('grid-estaciones');
 
     estaciones.forEach(est => {
-      // Marcador en el mapa
-      est.marker = L.marker([est.lat, est.lng]).addTo(map)
+      // Marcador en el mapa agregado al grupo
+      est.marker = L.marker([est.lat, est.lng]).addTo(markersGroup)
         .bindPopup(`<b>${est.nombre}</b><br>Cargando datos...`);
 
       // HTML de la tarjeta
@@ -266,6 +269,11 @@
       // Cargar datos reales
       cargarDatosEstacion(est);
     });
+
+    // Ajuste automático de la vista del mapa según los marcadores
+    if (estaciones.length > 0) {
+      map.fitBounds(markersGroup.getBounds(), { padding: [30, 30] });
+    }
 
     // 5. INICIALIZAR ICONOS Y MODO OSCURO
     feather.replace();
