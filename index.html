@@ -23,8 +23,6 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     #map { height: 380px; width: 100%; border-radius: 1rem; z-index: 10; }
-    /* Ajustes para el tema oscuro de Leaflet */
-    
   </style>
 
   <script>
@@ -42,7 +40,7 @@
     <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
       
       <div class="flex items-center space-x-4">
-		<img src="./Logo_INTA.png" alt="Logo INTA" class="h-12 bg-white p-1 rounded-lg shadow-md">
+        <img src="./Logo_INTA.png" alt="Logo INTA" class="h-12 bg-white p-1 rounded-lg shadow-md">
         <div>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">Portal Metereológico Regional</h1>
           <p class="text-blue-200 text-xs font-medium">INTA EEA Salta - Red de Estaciones Automáticas</p>
@@ -74,10 +72,10 @@
     </div>
 
     <!-- SECCIÓN DE MAPA Y TARJETAS -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
-      <!-- MAPA INTERACTIVO (1/3 en pantallas grandes) -->
-      <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between">
+      <!-- MAPA INTERACTIVO (Fijo con Sticky en 1/3) -->
+      <div class="lg:col-span-1 lg:sticky lg:top-24 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between">
         <div>
           <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 mb-3">
             <i data-feather="map-pin" class="h-5 w-5 text-sky-500"></i> Ubicación de Estaciones
@@ -93,7 +91,7 @@
           <i data-feather="radio" class="h-5 w-5 text-emerald-500"></i> Estaciones Monitoreadas
         </h3>
 
-        <div id="grid-estaciones" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div id="grid-estaciones" class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
           <!-- Las tarjetas se generan dinámicamente mediante JavaScript -->
         </div>
       </div>
@@ -105,15 +103,13 @@
   <!-- FOOTER -->
   <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700/60 py-8 mt-12 transition-colors">
     <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-4 text-center">
-      <!-- Logo ampliado -->
       <img src="./MECON-Agricultura-BLANCO.png" alt="Secretaría de Agricultura, Ganadería y Pesca" class="h-16 md:h-20 w-auto opacity-90 invert dark:invert-0 transition-all">
-      
     </div>
   </footer>
 
   <!-- LÓGICA DE EXTRACCIÓN DE DATOS Y RENDERIZADO -->
   <script>
-    // 1. CONFIGURACIÓN DE LAS ESTACIONES (Agrega aquí las nuevas estaciones)
+    // 1. CONFIGURACIÓN DE LAS ESTACIONES
     const estaciones = [
       {
         id: 'cerrillos',
@@ -122,69 +118,84 @@
         lat: -24.894167,
         lng: -65.470833,
         url: 'https://intasalta.github.io/ema_cerrillos/'
-      }
-  
-      ,{
+      },
+      {
         id: 'yuto',
         nombre: 'EECT Yuto',
         localidad: 'Yuto - Jujuy',
         lat: -23.5834012113927, 
         lng: -64.50683982631895,
         url: 'https://intasalta.github.io/ema_yuto/'
-      }
-	  ,{
+      },
+      {
         id: 'abrapampa',
         nombre: 'EEA Abra Pampa',
         localidad: 'Abra Pampa - Jujuy',
         lat: -22.722,
         lng: -65.696,
         url: 'https://intasalta.github.io/ema_abrapampa/'
-      }
-      ,{
+      },
+      {
         id: 'eet3167',
         nombre: 'Escuela de Ed. Técnica 3167',
         localidad: 'Las Lajitas - Salta',
         lat: -24.743391958553925, 
         lng: -64.2493717369287,
         url: 'https://intasalta.github.io/ema_lajitas/'
+      },
+      {
+        id: 'abradelsol',
+        nombre: 'Abra del Sol',
+        localidad: 'Pichanal - Salta',
+        lat: -23.30403, 
+        lng: -64.20282,
+        url: 'https://intasalta.github.io/ema_abradelsol/'
+      },
+      {
+        id: 'elbrete',
+        nombre: 'El Brete - SPMF',
+        localidad: 'El Brete - Jujuy',
+        lat:  -24.235585281334902, 
+        lng:  -65.18225916823062,
+        url: 'https://intasalta.github.io/ema_elbrete/'
+      },
+      {
+        id: 'lavina',
+        nombre: 'Finca San Antonio',
+        localidad: 'La Viña - Salta',
+        lat:  -25.4725,
+        lng:   -65.567778,
+        url: 'https://intasalta.github.io/ema_lavina/'
       }
     ];
 
     // 2. INICIALIZAR MAPA
     const map = L.map('map');
     L.tileLayer('https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png', {
-	  maxZoom: 18,
-	  minZoom: 3,
-	  attribution: '&copy; <a href="https://www.ign.gob.ar/AreaServicios/Argenmap/Introduccion" target="_blank">IGN Argentina - Argenmap</a>'
-	}).addTo(map);
+      maxZoom: 18,
+      minZoom: 3,
+      attribution: '&copy; <a href="https://www.ign.gob.ar/AreaServicios/Argenmap/Introduccion" target="_blank">IGN Argentina - Argenmap</a>'
+    }).addTo(map);
 
-    // Grupo para almacenar todos los marcadores y calcular sus límites
     const markersGroup = L.featureGroup().addTo(map);
 
     // 3. FUNCIÓN PARA PARSEAR EL INDEX.HTML DE CADA ESTACIÓN
     async function cargarDatosEstacion(estacion) {
-      const container = document.getElementById(`card-${estacion.id}`);
-      
       try {
-        // Fetch al index.html de la estación
         const res = await fetch(estacion.url + 'index.html');
         if (!res.ok) throw new Error('No disponible');
         const html = await res.text();
 
-        // DOM Parser para leer el HTML
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        // Extraer valores clave usando clases o etiquetas de tu estructura
         const valoresGrandes = doc.querySelectorAll('.text-3xl');
         const temp = valoresGrandes[0] ? valoresGrandes[0].innerText.replace('\n', '') : '-- °C';
         const hum = valoresGrandes[1] ? valoresGrandes[1].innerText.replace('\n', '') : '-- %';
 
-        // Extraer Hora de Actualización
         const h2Hora = doc.querySelector('h2');
         const ultimaAct = h2Hora ? h2Hora.innerText.trim() : 'Sin registro';
 
-        // Extraer Lluvia del día
         let lluvia = '0.0 mm';
         const parrafos = doc.querySelectorAll('p');
         parrafos.forEach(p => {
@@ -193,13 +204,11 @@
           }
         });
 
-        // Actualizar Tarjeta en el DOM
         document.getElementById(`temp-${estacion.id}`).innerText = temp;
         document.getElementById(`hum-${estacion.id}`).innerText = hum;
         document.getElementById(`lluvia-${estacion.id}`).innerText = lluvia;
         document.getElementById(`time-${estacion.id}`).innerText = ultimaAct;
 
-        // Actualizar Popup del Mapa
         estacion.marker.bindPopup(`
           <div style="font-family: sans-serif;">
             <b style="font-size:14px">${estacion.nombre}</b><br>
@@ -210,8 +219,11 @@
 
       } catch (err) {
         console.error(`Error cargando ${estacion.id}:`, err);
-        document.getElementById(`status-${estacion.id}`).className = "text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20";
-        document.getElementById(`status-${estacion.id}`).innerText = "Sin conexión";
+        const statusElem = document.getElementById(`status-${estacion.id}`);
+        if (statusElem) {
+          statusElem.className = "text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20";
+          statusElem.innerText = "Sin conexión";
+        }
       }
     }
 
@@ -219,11 +231,9 @@
     const grid = document.getElementById('grid-estaciones');
 
     estaciones.forEach(est => {
-      // Marcador en el mapa agregado al grupo
       est.marker = L.marker([est.lat, est.lng]).addTo(markersGroup)
         .bindPopup(`<b>${est.nombre}</b><br>Cargando datos...`);
 
-      // HTML de la tarjeta
       const cardHTML = `
         <div id="card-${est.id}" class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between hover:border-sky-500/50 transition-all">
           <div>
@@ -266,11 +276,9 @@
       `;
       grid.insertAdjacentHTML('beforeend', cardHTML);
 
-      // Cargar datos reales
       cargarDatosEstacion(est);
     });
 
-    // Ajuste automático de la vista del mapa según los marcadores
     if (estaciones.length > 0) {
       map.fitBounds(markersGroup.getBounds(), { padding: [30, 30] });
     }
