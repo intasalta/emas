@@ -169,7 +169,26 @@
       }
     ];
 
-    // 2. INICIALIZAR MAPA
+    // 2. DEFINIR ICONOS PERSONALIZADOS DE LEAFLET (VERDE Y ROJO)
+    const greenIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    const redIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    // 3. INICIALIZAR MAPA
     const map = L.map('map');
     L.tileLayer('https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/capabaseargenmap@EPSG%3A3857@png/{z}/{x}/{-y}.png', {
       maxZoom: 18,
@@ -179,7 +198,7 @@
 
     const markersGroup = L.featureGroup().addTo(map);
 
-    // 3. FUNCIÓN PARA PARSEAR EL INDEX.HTML DE CADA ESTACIÓN
+    // 4. FUNCIÓN PARA PARSEAR Y CARGAR DATOS
     async function cargarDatosEstacion(estacion) {
       try {
         const res = await fetch(estacion.url + 'index.html');
@@ -204,14 +223,20 @@
           }
         });
 
+        // Actualizar datos en la tarjeta
         document.getElementById(`temp-${estacion.id}`).innerText = temp;
         document.getElementById(`hum-${estacion.id}`).innerText = hum;
         document.getElementById(`lluvia-${estacion.id}`).innerText = lluvia;
         document.getElementById(`time-${estacion.id}`).innerText = ultimaAct;
 
+        // CAMBIAR MARCADOR A VERDE (Activo)
+        estacion.marker.setIcon(greenIcon);
+
+        // Actualizar Popup del marcador
         estacion.marker.bindPopup(`
           <div style="font-family: sans-serif;">
             <b style="font-size:14px">${estacion.nombre}</b><br>
+            <span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa</span><br>
             <span>Temp: <b>${temp}</b></span> | <span>Hum: <b>${hum}</b></span><br>
             <a href="${estacion.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-size:12px;">Ver Dashboard</a>
           </div>
@@ -219,20 +244,35 @@
 
       } catch (err) {
         console.error(`Error cargando ${estacion.id}:`, err);
+        
+        // CAMBIAR MARCADOR A ROJO (Inactivo)
+        estacion.marker.setIcon(redIcon);
+
+        // Actualizar etiqueta de la tarjeta
         const statusElem = document.getElementById(`status-${estacion.id}`);
         if (statusElem) {
           statusElem.className = "text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20";
           statusElem.innerText = "Sin conexión";
         }
+
+        // Actualizar Popup
+        estacion.marker.bindPopup(`
+          <div style="font-family: sans-serif;">
+            <b style="font-size:14px">${estacion.nombre}</b><br>
+            <span style="color: #dc2626; font-weight: bold; font-size: 11px;">● Sin conexión</span><br>
+            <a href="${estacion.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-size:12px;">Intentar abrir Dashboard</a>
+          </div>
+        `);
       }
     }
 
-    // 4. GENERAR TARJETAS EN LA GRILLA E INICIALIZAR PINES EN EL MAPA
+    // 5. GENERAR TARJETAS EN LA GRILLA E INICIALIZAR PINES EN EL MAPA
     const grid = document.getElementById('grid-estaciones');
 
     estaciones.forEach(est => {
+      // Marcador inicial por defecto
       est.marker = L.marker([est.lat, est.lng]).addTo(markersGroup)
-        .bindPopup(`<b>${est.nombre}</b><br>Cargando datos...`);
+        .bindPopup(`<b>${est.nombre}</b><br>Verificando estado...`);
 
       const cardHTML = `
         <div id="card-${est.id}" class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between hover:border-sky-500/50 transition-all">
@@ -283,7 +323,7 @@
       map.fitBounds(markersGroup.getBounds(), { padding: [30, 30] });
     }
 
-    // 5. INICIALIZAR ICONOS Y MODO OSCURO
+    // 6. INICIALIZAR ICONOS Y MODO OSCURO
     feather.replace();
 
     const themeToggleBtn = document.getElementById('theme-toggle');
