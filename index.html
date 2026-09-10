@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Red de Estaciones Meteorológicas Automáticas - INTA Salta</title>
+  <title>Red de Estaciones Meteorológicas Automáticas - INTA CR SALTA-JUJUY</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -43,16 +43,26 @@
         <img src="./Logo_INTA.png" alt="Logo INTA" class="h-12 bg-white p-1 rounded-lg shadow-md">
         <div>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">Portal Metereológico Regional</h1>
-          <p class="text-blue-200 text-xs font-medium">INTA EEA Salta - Red de Estaciones Automáticas</p>
+          <p class="text-blue-200 text-xs font-medium">Red de Estaciones Meteorológicas Automáticas del INTA  - Centro Regional Salta y Jujuy</p>
         </div>
       </div>
+	  <!-- BOTONES DEL HEADER -->
+		<div class="flex items-center gap-3">
+		  <!-- BOTÓN "QUIÉNES SOMOS" -->
+		  <button id="info-modal-btn" type="button" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 text-xs font-semibold transition-all">
+			<i data-feather="info" class="h-4 w-4"></i>
+			<span>¿Quiénes Somos?</span>
+		  </button>
 
-      <div class="flex items-center gap-3">
-        <button id="theme-toggle" type="button" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 transition-all">
-          <i id="theme-toggle-dark-icon" data-feather="moon" class="hidden h-5 w-5"></i>
-          <i id="theme-toggle-light-icon" data-feather="sun" class="hidden h-5 w-5 text-amber-300"></i>
-        </button>
-      </div>
+		  <!-- BOTÓN MODO OSCURO -->
+		  <button id="theme-toggle" type="button" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 transition-all">
+			<i id="theme-toggle-dark-icon" data-feather="moon" class="hidden h-5 w-5"></i>
+			<i id="theme-toggle-light-icon" data-feather="sun" class="hidden h-5 w-5 text-amber-300"></i>
+		  </button>
+		</div>
+	
+
+      
     </div>
   </header>
 
@@ -99,6 +109,62 @@
     </div>
 
   </main>
+  
+  
+  <!-- MODAL ACERCA DE / QUIÉNES SOMOS -->
+<div id="info-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
+    
+    <!-- Botón para cerrar (X) -->
+    <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg transition-colors">
+      <i data-feather="x" class="h-6 w-6"></i>
+    </button>
+
+    <!-- Encabezado del Modal -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="p-3 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-xl">
+        <i data-feather="help-circle" class="h-6 w-6"></i>
+      </div>
+      <div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Acerca de la Red</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">INTA Centro Regional Salta-Jujuy</p>
+      </div>
+    </div>
+
+    <!-- Contenido explicativo -->
+    <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+      <div>
+        <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">¿Qué es esta red?</h4>
+        <p>
+          La Red de Estaciones Meteorológicas Automáticas (EMA) es una iniciativa orientada al monitoreo continuo de variables agrometeorológicas clave en las provincias de Salta y Jujuy. Su objetivo principal es brindar información en tiempo real para apoyar la toma de decisiones agrícolas, la gestión del agua y la prevención de riesgos climáticos.
+        </p>
+      </div>
+
+      <hr class="border-slate-100 dark:border-slate-700/60">
+
+      <div>
+        <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Responsables y Trabajo Interinstitucional</h4>
+        <p>
+          El mantenimiento, procesamiento y difusión de estos datos son coordinados por el equipo de <b>Agrometeorología de la EEA Salta del INTA</b>, en colaboración con las Estaciones Experimentales de Yuto y Abra Pampa, escuelas técnicas agronómicas, organismos provinciales y entidades del sector privado.
+        </p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
+        <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">Contacto Institucional:</p>
+        <p class="text-xs">Estación Experimental Agropecuaria Salta - INTA</p>
+        <p class="text-xs text-sky-600 dark:text-sky-400">Ruta Nacional 68 Km 172, Cerrillos, Salta</p>
+      </div>
+    </div>
+
+    <!-- Botón Entendido -->
+    <div class="mt-6 flex justify-end">
+      <button id="confirm-modal-btn" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl transition-all">
+        Entendido
+      </button>
+    </div>
+
+  </div>
+</div>
 
   <!-- FOOTER -->
   <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700/60 py-8 mt-12 transition-colors">
@@ -233,14 +299,22 @@
         estacion.marker.setIcon(greenIcon);
 
         // Actualizar Popup del marcador
-        estacion.marker.bindPopup(`
-          <div style="font-family: sans-serif;">
-            <b style="font-size:14px">${estacion.nombre}</b><br>
-            <span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa</span><br>
-            <span>Temp: <b>${temp}</b></span> | <span>Hum: <b>${hum}</b></span><br>
-            <a href="${estacion.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-size:12px;">Ver Dashboard</a>
-          </div>
-        `);
+        // Actualizar Popup del marcador para estaciones activas
+		estacion.marker.bindPopup(`
+		  <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
+			<b style="font-size: 14px; color: #1e293b;">${estacion.nombre}</b><br>
+			<span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa</span><br>
+			<hr style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;">
+			<div>Temp: <b>${temp}</b> | Hum: <b>${hum}</b></div>
+			<div>Lluvia día: <b style="color: #0284c7;">${lluvia}</b></div>
+			<div style="font-size: 10px; color: #64748b; margin-top: 4px;">
+			  <b>Actualizado:</b> ${ultimaAct}
+			</div>
+			<div style="margin-top: 6px;">
+			  <a href="${estacion.url}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">Ver Dashboard</a>
+			</div>
+		  </div>
+		`);
 
       } catch (err) {
         console.error(`Error cargando ${estacion.id}:`, err);
@@ -312,7 +386,7 @@
               Ver Dashboard Completo <i data-feather="external-link" class="h-3.5 w-3.5"></i>
             </a>
           </div>
-        </div>
+        </div
       `;
       grid.insertAdjacentHTML('beforeend', cardHTML);
 
@@ -322,6 +396,8 @@
     if (estaciones.length > 0) {
       map.fitBounds(markersGroup.getBounds(), { padding: [30, 30] });
     }
+	
+	
 
     // 6. INICIALIZAR ICONOS Y MODO OSCURO
     feather.replace();
@@ -348,6 +424,32 @@
         localStorage.setItem('theme', 'dark');
       }
     });
+	// Manejo del Modal Informativo
+	const infoModalBtn = document.getElementById('info-modal-btn');
+	const infoModal = document.getElementById('info-modal');
+	const closeModalBtn = document.getElementById('close-modal-btn');
+	const confirmModalBtn = document.getElementById('confirm-modal-btn');
+
+	function openModal() {
+	  infoModal.classList.remove('hidden');
+	}
+
+	function closeModal() {
+	  infoModal.classList.add('hidden');
+	}
+
+	infoModalBtn.addEventListener('click', openModal);
+	closeModalBtn.addEventListener('click', closeModal);
+	confirmModalBtn.addEventListener('click', closeModal);
+
+	// Cerrar si se hace clic fuera de la caja del modal
+	infoModal.addEventListener('click', function(e) {
+	  if (e.target === infoModal) {
+		closeModal();
+	  }
+	});
+	
+	
   </script>
 </body>
 </html>
