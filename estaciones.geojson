@@ -1,0 +1,165 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.470833,
+          -24.894167
+        ]
+      },
+      "properties": {
+        "id": "cerrillos",
+        "nombre": "EEA Cerrillos",
+        "localidad": "Cerrillos - Salta",
+        "lat": -24.894167,
+        "lng": -65.470833,
+        "url": "https://intasalta.github.io/ema_cerrillos/",
+        "ultima_fecha": "13/10/26 - 13:40",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.50683982631895,
+          -23.5834012113927
+        ]
+      },
+      "properties": {
+        "id": "yuto",
+        "nombre": "EECT Yuto",
+        "localidad": "Yuto - Jujuy",
+        "lat": -23.5834012113927,
+        "lng": -64.50683982631895,
+        "url": "https://intasalta.github.io/ema_yuto/",
+        "ultima_fecha": "13/10/26 - 13:59",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.63,
+          -25.37
+        ]
+      },
+      "properties": {
+        "id": "eet3119",
+        "nombre": "EET 3119",
+        "localidad": "El Galpón - Salta",
+        "lat": -25.37,
+        "lng": -64.63,
+        "url": "https://intasalta.github.io/ema_elgalpon/",
+        "ultima_fecha": "13/10/26 - 13:43",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.696,
+          -22.722
+        ]
+      },
+      "properties": {
+        "id": "abrapampa",
+        "nombre": "EEA Abra Pampa",
+        "localidad": "Abra Pampa - Jujuy",
+        "lat": -22.722,
+        "lng": -65.696,
+        "url": "https://intasalta.github.io/ema_abrapampa/",
+        "ultima_fecha": "Sin registro",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.2493717369287,
+          -24.743391958553925
+        ]
+      },
+      "properties": {
+        "id": "eet3167",
+        "nombre": "Escuela de Ed. Técnica 3167",
+        "localidad": "Las Lajitas - Salta",
+        "lat": -24.743391958553925,
+        "lng": -64.2493717369287,
+        "url": "https://intasalta.github.io/emas",
+        "ultima_fecha": "Sin registro",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -64.20282,
+          -23.30403
+        ]
+      },
+      "properties": {
+        "id": "abradelsol",
+        "nombre": "Abra del Sol",
+        "localidad": "Pichanal - Salta",
+        "lat": -23.30403,
+        "lng": -64.20282,
+        "url": "https://intasalta.github.io/ema_abradelsol/",
+        "ultima_fecha": "Sin registro",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.18225916823062,
+          -24.235585281334902
+        ]
+      },
+      "properties": {
+        "id": "elbrete",
+        "nombre": "El Brete - SPMF",
+        "localidad": "El Brete - Jujuy",
+        "lat": -24.235585281334902,
+        "lng": -65.18225916823062,
+        "url": "https://intasalta.github.io/ema_elbrete/",
+        "ultima_fecha": "Sin registro",
+        "activo": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -65.567778,
+          -25.4725
+        ]
+      },
+      "properties": {
+        "id": "lavina",
+        "nombre": "Finca San Antonio",
+        "localidad": "La Viña - Salta",
+        "lat": -25.4725,
+        "lng": -65.567778,
+        "url": "https://intasalta.github.io/ema_lavina/",
+        "ultima_fecha": "Sin registro",
+        "activo": false
+      }
+    }
+  ]
+}
