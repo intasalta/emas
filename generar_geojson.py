@@ -4,7 +4,6 @@ import re
 import urllib.request
 from bs4 import BeautifulSoup
 
-# URL del index.html principal de tu repositorio donde está el array de estaciones
 INDEX_URL = (
     "https://raw.githubusercontent.com/intasalta/emas/main/index.html"
 )
@@ -17,16 +16,14 @@ try:
   with urllib.request.urlopen(req, timeout=10) as response:
     content_html = response.read().decode("utf-8")
 except Exception as e:
-  print(f"Error al descargar index.html de GitHub: {e}")
-  # Fallback: intentar leerlo localmente si se ejecuta dentro del mismo repo
+  print(f"Error al descargar index.html: {e}")
   try:
     with open("index.html", "r", encoding="utf-8") as f:
       content_html = f.read()
   except Exception as local_err:
-    print(f"Tampoco se pudo leer el archivo localmente: {local_err}")
+    print(f"Tampoco se pudo leer localmente: {local_err}")
     exit(1)
 
-# Extraer el bloque del array 'const estaciones = [...]' usando expresiones regulares
 match_array = re.search(
     r"const\s+estaciones\s*=\s*\[(.*?)\];", content_html, re.DOTALL
 )
@@ -35,8 +32,6 @@ if not match_array:
   exit(1)
 
 array_text = match_array.group(1)
-
-# Parsear las estaciones individuales dentro del array de JavaScript
 estaciones = []
 objetos_str = re.findall(r"\{(.*?)\}", array_text, re.DOTALL)
 
@@ -63,11 +58,10 @@ ahora_utc = datetime.now(timezone.utc)
 for est in estaciones:
   ultima_fecha_str = "Sin registro"
   activo = False
-
   url_dashboard = est.get("url", "")
+
   if url_dashboard:
     try:
-      # Petición al dashboard de cada estación
       req_est = urllib.request.Request(
           url_dashboard + "index.html", headers={"User-Agent": "Mozilla/5.0"}
       )
@@ -75,36 +69,31 @@ for est in estaciones:
         html_est = resp_est.read().decode("utf-8")
         soup_est = BeautifulSoup(html_est, "html.parser")
 
-        # Buscar la fecha de última actualización en el elemento h2
-        # Buscar la fecha de última actualización de forma más flexible en el h2
-        h2_hora = soup_est.find('h2')
+        # Buscamos la etiqueta h2
+        h2_hora = soup_est.find("h2")
         if h2_hora:
           ultima_fecha_str = h2_hora.get_text().strip()
+          print(
+              f"[{est.get('id')}] Texto h2 encontrado: '{ultima_fecha_str}'"
+          )
 
-          # Buscar cualquier patrón de hora de 24 horas (ej: 14:30 o 08:15) en el texto del h2
-          match_hora = re.search(r'(\d{2}):(\d{2})', ultima_fecha_str)
-          
+          # Buscamos cualquier coincidencia de hora (HH:MM)
+          match_hora = re.search(r"(\d{2}):(\d{2})", ultima_fecha_str)
           if match_hora:
-            # Si encontrarmos una hora en el h2 del día de hoy, asumimos que está activo
-            # O podemos comparar con la hora actual de Argentina (UTC-3)
-            hora_est = int(match_hora.group(1))
-            min_est = int(match_hora.group(2))
-            
-            # Hora actual en Argentina
-            ahora_arg = datetime.now(timezone(timedelta(hours=-3)))
-            
-            # Verificamos si la hora de la estación pertenece al día de hoy y está dentro de la última hora y media
-            if ahora_arg.hour == hora_est and abs(ahora_arg.minute - min_est) <= 90:
-              activo = True
-            elif abs(ahora_arg.hour - hora_est) == 1 and ahora_arg.minute + (60 - min_est) <= 90:
-              activo = True
+            # Si encuentra hora, marcamos como activo para pruebas
+            # (Puedes ajustar la validación de tiempo exacta aquí si lo deseas)
+            activo = True
+          else:
+            print(
+                f"[{est.get('id')}] No se pudo extraer la hora del texto"
+                " anterior."
+            )
+        else:
+          print(f"[{est.get('id')}] No se encontró etiqueta <h2> en la página.")
     except Exception as err:
-      print(f"Estación sin conexión o error en {est.get('id')}: {err}")
+      print(f"Error conectando a {est.get('id')}: {err}")
 
-  # Definir color y simbología directamente en los atributos para el visor (Argenmap / Leaflet)
-  color_marcador = (
-      "#16a34a" if activo else "#dc2626"
-  )  # Verde si activo, Rojo si inactivo
+  color_marcador = "#16a34a" if activo else "#dc2626"
   estado_texto = "Activa" if activo else "Sin conexión"
 
   feature = {
@@ -120,21 +109,16 @@ for est in estaciones:
           "ultima_fecha": ultima_fecha_str,
           "activo": activo,
           "estado_texto": estado_texto,
-          # Propiedades de estilo integradas para visores web
           "marker-color": color_marcador,
           "fillColor": color_marcador,
-          "color": "#ffffff",  # Borde blanco
+          "color": "#ffffff",
       },
   }
   features.append(feature)
 
 geojson_data = {"type": "FeatureCollection", "features": features}
 
-# Guardar el archivo GeoJSON resultante
 with open("estaciones.geojson", "w", encoding="utf-8") as f:
   json.dump(geojson_data, f, ensure_ascii=False, indent=2)
 
-print(
-    "Archivo estaciones.geojson generado exitosamente con la simbología"
-    " incluida."
-)
+print("GeoJSON generado con depuración.")
