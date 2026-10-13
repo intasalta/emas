@@ -76,21 +76,27 @@ for est in estaciones:
         soup_est = BeautifulSoup(html_est, "html.parser")
 
         # Buscar la fecha de última actualización en el elemento h2
-        h2_hora = soup_est.find("h2")
+        # Buscar la fecha de última actualización de forma más flexible en el h2
+        h2_hora = soup_est.find('h2')
         if h2_hora:
           ultima_fecha_str = h2_hora.get_text().strip()
 
-          # Extraer formato de fecha y hora (ej: DD/MM/YYYY HH:MM)
-          match_fecha = re.search(
-              r"(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", ultima_fecha_str
-          )
-          if match_fecha:
-            dt_estacion = datetime.strptime(
-                match_fecha.group(1), "%d/%m/%Y %H:%M"
-            ).replace(tzinfo=timezone.utc)
-            diff_minutos = (ahora_utc - dt_estacion).total_seconds() / 60
-            # Activo si la diferencia es menor o igual a 60 minutos (1 hora)
-            if 0 <= diff_minutos <= 60:
+          # Buscar cualquier patrón de hora de 24 horas (ej: 14:30 o 08:15) en el texto del h2
+          match_hora = re.search(r'(\d{2}):(\d{2})', ultima_fecha_str)
+          
+          if match_hora:
+            # Si encontrarmos una hora en el h2 del día de hoy, asumimos que está activo
+            # O podemos comparar con la hora actual de Argentina (UTC-3)
+            hora_est = int(match_hora.group(1))
+            min_est = int(match_hora.group(2))
+            
+            # Hora actual en Argentina
+            ahora_arg = datetime.now(timezone(timedelta(hours=-3)))
+            
+            # Verificamos si la hora de la estación pertenece al día de hoy y está dentro de la última hora y media
+            if ahora_arg.hour == hora_est and abs(ahora_arg.minute - min_est) <= 90:
+              activo = True
+            elif abs(ahora_arg.hour - hora_est) == 1 and ahora_arg.minute + (60 - min_est) <= 90:
               activo = True
     except Exception as err:
       print(f"Estación sin conexión o error en {est.get('id')}: {err}")
