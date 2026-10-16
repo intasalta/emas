@@ -40,29 +40,28 @@
     <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
       
       <div class="flex items-center space-x-4">
-        <img src="./Logo_INTA.png" alt="Logo INTA" class="h-12 bg-white p-1 rounded-lg shadow-md">
+        <img src="./logo_inta.png" onerror="this.onerror=null; this.src='./Logo_INTA.png';" alt="Logo INTA" class="h-12 bg-white p-1 rounded-lg shadow-md">
         <div>
-          <h1 class="text-lg sm:text-xl font-bold tracking-tight">Portal Metereológico Regional</h1>
-          <p class="text-blue-200 text-xs font-medium">Red de Estaciones Meteorológicas Automáticas del INTA  - Centro Regional Salta y Jujuy</p>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight">Portal Meteorológico Regional</h1>
+          <p class="text-blue-200 text-xs font-medium">Red de Estaciones Meteorológicas Automáticas del INTA - Centro Regional Salta y Jujuy</p>
         </div>
       </div>
-	  <!-- BOTONES DEL HEADER -->
-		<div class="flex items-center gap-3">
-		  <!-- BOTÓN "QUIÉNES SOMOS" -->
-		  <button id="info-modal-btn" type="button" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 text-xs font-semibold transition-all">
-			<i data-feather="info" class="h-4 w-4"></i>
-			<span>Acerca de la Red</span>
-		  </button>
 
-		  <!-- BOTÓN MODO OSCURO -->
-		  <button id="theme-toggle" type="button" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 transition-all">
-			<i id="theme-toggle-dark-icon" data-feather="moon" class="hidden h-5 w-5"></i>
-			<i id="theme-toggle-light-icon" data-feather="sun" class="hidden h-5 w-5 text-amber-300"></i>
-		  </button>
-		</div>
-	
+      <!-- BOTONES DEL HEADER -->
+      <div class="flex items-center gap-3">
+        <!-- BOTÓN "QUIÉNES SOMOS" -->
+        <button id="info-modal-btn" type="button" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 text-xs font-semibold transition-all">
+          <i data-feather="info" class="h-4 w-4"></i>
+          <span>Acerca de la Red</span>
+        </button>
 
-      
+        <!-- BOTÓN MODO OSCURO -->
+        <button id="theme-toggle" type="button" aria-label="Cambiar tema" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-blue-100 border border-white/20 transition-all">
+          <i id="theme-toggle-dark-icon" data-feather="moon" class="hidden h-5 w-5"></i>
+          <i id="theme-toggle-light-icon" data-feather="sun" class="hidden h-5 w-5 text-amber-300"></i>
+        </button>
+      </div>
+
     </div>
   </header>
 
@@ -97,9 +96,21 @@
 
       <!-- GRILLA DE ESTACIONES (2/3 en pantallas grandes) -->
       <div class="lg:col-span-2 space-y-4">
-        <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-          <i data-feather="radio" class="h-5 w-5 text-emerald-500"></i> Estaciones Monitoreadas
-        </h3>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+            <i data-feather="radio" class="h-5 w-5 text-emerald-500"></i> Estaciones Monitoreadas
+          </h3>
+
+          <!-- BOTONES DE CONTROL: COMPRIMIR / EXPANDIR TODAS -->
+          <div class="flex items-center gap-2">
+            <button onclick="comprimirTodas()" class="text-xs px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+              <i data-feather="minimize-2" class="h-3.5 w-3.5 text-slate-400"></i> Comprimir todas
+            </button>
+            <button onclick="expandirTodas()" class="text-xs px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 font-semibold flex items-center gap-1.5 transition-all shadow-sm">
+              <i data-feather="maximize-2" class="h-3.5 w-3.5 text-sky-500"></i> Expandir todas
+            </button>
+          </div>
+        </div>
 
         <div id="grid-estaciones" class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
           <!-- Las tarjetas se generan dinámicamente mediante JavaScript -->
@@ -110,66 +121,64 @@
 
   </main>
   
-  
   <!-- MODAL ACERCA DE / QUIÉNES SOMOS -->
-<div id="info-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
-  <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
-    
-    <!-- Botón para cerrar (X) -->
-    <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg transition-colors">
-      <i data-feather="x" class="h-6 w-6"></i>
-    </button>
-
-    <!-- Encabezado del Modal -->
-    <div class="flex items-center gap-3 mb-4">
-      <div class="p-3 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-xl">
-        <i data-feather="help-circle" class="h-6 w-6"></i>
-      </div>
-      <div>
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Acerca de la Red</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400">INTA Centro Regional Salta-Jujuy</p>
-      </div>
-    </div>
-
-    <!-- Contenido explicativo -->
-    <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-      <div>
-        <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">¿Qué es esta red?</h4>
-        <p>
-          La Red de Estaciones Meteorológicas Automáticas (EMA) es una iniciativa orientada al monitoreo continuo de variables agrometeorológicas clave en las provincias de Salta y Jujuy. Su objetivo principal es brindar información en tiempo real para apoyar la toma de decisiones agrícolas, la gestión del agua y la prevención de riesgos climáticos.
-        </p>
-      </div>
-
-      <hr class="border-slate-100 dark:border-slate-700/60">
-
-      <div>
-        <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Responsables y Trabajo Interinstitucional</h4>
-        <p>
-          El mantenimiento, procesamiento y difusión de estos datos son coordinados por el equipo de <b>Agrometeorología de la EEA Salta del INTA</b>, en colaboración con las Estaciones Experimentales de Yuto y Abra Pampa, escuelas técnicas agronómicas, organismos provinciales y entidades del sector privado.
-        </p>
-      </div>
-
-      <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
-        <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">Contacto Institucional:</p>
-        <p class="text-xs">Estación Experimental Agropecuaria Salta - INTA</p>
-        <p class="text-xs text-sky-600 dark:text-sky-400">Ruta Nacional 68 Km 172, Cerrillos, Salta</p>
-      </div>
-    </div>
-
-    <!-- Botón Entendido -->
-    <div class="mt-6 flex justify-end">
-      <button id="confirm-modal-btn" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl transition-all">
-        Entendido
+  <div id="info-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
+      
+      <!-- Botón para cerrar (X) -->
+      <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg transition-colors">
+        <i data-feather="x" class="h-6 w-6"></i>
       </button>
-    </div>
 
+      <!-- Encabezado del Modal -->
+      <div class="flex items-center gap-3 mb-4">
+        <div class="p-3 bg-sky-500/10 text-sky-600 dark:text-sky-400 rounded-xl">
+          <i data-feather="help-circle" class="h-6 w-6"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Acerca de la Red</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">INTA Centro Regional Salta-Jujuy</p>
+        </div>
+      </div>
+
+      <!-- Contenido explicativo -->
+      <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+        <div>
+          <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">¿Qué es esta red?</h4>
+          <p>
+            La Red de Estaciones Meteorológicas Automáticas (EMA) es una iniciativa orientada al monitoreo continuo de variables agrometeorológicas clave en las provincias de Salta y Jujuy. Su objetivo principal es brindar información en tiempo real para apoyar la toma de decisiones agrícolas, la gestión del agua y la prevención de riesgos climáticos.
+          </p>
+        </div>
+
+        <hr class="border-slate-100 dark:border-slate-700/60">
+
+        <div>
+          <h4 class="font-semibold text-slate-800 dark:text-slate-100 mb-1">Responsables y Trabajo Interinstitucional</h4>
+          <p>
+            El mantenimiento, procesamiento y difusión de estos datos son coordinados por el equipo de <b>Agrometeorología de la EEA Salta del INTA</b>, en colaboración con las Estaciones Experimentales de Yuto y Abra Pampa, escuelas técnicas agronómicas, organismos provinciales y entidades del sector privado.
+          </p>
+        </div>
+
+        <div class="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
+          <p class="text-xs font-semibold text-slate-700 dark:text-slate-200">Contacto Institucional:</p>
+          <p class="text-xs">Estación Experimental Agropecuaria Salta - INTA</p>
+          <p class="text-xs text-sky-600 dark:text-sky-400">Ruta Nacional 68 Km 172, Cerrillos, Salta</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button id="confirm-modal-btn" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl transition-all">
+          Entendido
+        </button>
+      </div>
+
+    </div>
   </div>
-</div>
 
   <!-- FOOTER -->
   <footer class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700/60 py-8 mt-12 transition-colors">
     <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-4 text-center">
-      <img src="./MECON-Agricultura-BLANCO.png" alt="Secretaría de Agricultura, Ganadería y Pesca" class="h-16 md:h-20 w-auto opacity-90 invert dark:invert-0 transition-all">
+      <img src="./MECON-Agricultura-BLANCO.png" onerror="this.onerror=null; this.src='../MECON-Agricultura-BLANCO.png';" alt="Secretaría de Agricultura, Ganadería y Pesca" class="h-16 md:h-20 w-auto opacity-90 invert dark:invert-0 transition-all">
     </div>
   </footer>
 
@@ -183,7 +192,8 @@
         localidad: 'Cerrillos - Salta',
         lat: -24.894167,
         lng: -65.470833,
-        url: 'https://intasalta.github.io/ema_cerrillos/'
+        url: 'https://intasalta.github.io/ema_cerrillos/',
+        tipo: 'davis'
       },
       {
         id: 'yuto',
@@ -191,14 +201,17 @@
         localidad: 'Yuto - Jujuy',
         lat: -23.5834012113927, 
         lng: -64.50683982631895,
-        url: 'https://intasalta.github.io/ema_yuto/'
-      },{
+        url: 'https://intasalta.github.io/ema_yuto/',
+        tipo: 'davis'
+      },
+      {
         id: 'eet3119',
         nombre: 'EET 3119',
         localidad: 'El Galpón - Salta',
         lat: -25.37, 
         lng: -64.63,
-        url: 'https://intasalta.github.io/ema_elgalpon/'
+        url: 'https://intasalta.github.io/ema_elgalpon/',
+        tipo: 'davis'
       },
       {
         id: 'abrapampa',
@@ -206,23 +219,30 @@
         localidad: 'Abra Pampa - Jujuy',
         lat: -22.722,
         lng: -65.696,
-        url: 'https://intasalta.github.io/ema_abrapampa/'
+        url: 'https://intasalta.github.io/ema_abrapampa/',
+        tipo: 'davis'
       },
       {
         id: 'chaguaral',
         nombre: 'Chaguaral',
-        localidad: 'Chaguaral - Oran, Salta',
+        localidad: 'Chaguaral - Orán, Salta',
         lat: -24.166458585731,
         lng: -63.985500050144,
-        url: 'https://intasalta.github.io/ema_chaguaral/'
+        url: 'https://intasalta.github.io/ema_chaguaral/',
+        tipo: 'imetos',
+        csvUrl: 'https://raw.githubusercontent.com/intasalta/imetos/main/00002646_station_data.csv',
+        localCsv: './00002646_station_data.csv'
       },
-	  {
+      {
         id: 'mollinedo',
         nombre: 'Mollinedo',
         localidad: 'Cnel. Mollinedo - Anta, Salta',
         lat: -24.53321,
         lng: -64.09959,
-        url: 'https://intasalta.github.io/ema_mollinedo/'
+        url: 'https://intasalta.github.io/ema_mollinedo/',
+        tipo: 'imetos',
+        csvUrl: 'https://raw.githubusercontent.com/intasalta/imetos/main/00002586_station_data.csv',
+        localCsv: './00002586_station_data.csv'
       },
       {
         id: 'eet3167',
@@ -230,7 +250,8 @@
         localidad: 'Las Lajitas - Salta',
         lat: -24.743391958553925, 
         lng: -64.2493717369287,
-        url: 'https://intasalta.github.io/emas'
+        url: 'https://intasalta.github.io/emas',
+        tipo: 'davis'
       },
       {
         id: 'abradelsol',
@@ -238,23 +259,26 @@
         localidad: 'Pichanal - Salta',
         lat: -23.30403, 
         lng: -64.20282,
-        url: 'https://intasalta.github.io/ema_abradelsol/'
+        url: 'https://intasalta.github.io/ema_abradelsol/',
+        tipo: 'davis'
       },
       {
         id: 'elbrete',
         nombre: 'El Brete - SPMF',
         localidad: 'El Brete - Jujuy',
-        lat:  -24.235585281334902, 
-        lng:  -65.18225916823062,
-        url: 'https://intasalta.github.io/ema_elbrete/'
+        lat: -24.235585281334902, 
+        lng: -65.18225916823062,
+        url: 'https://intasalta.github.io/ema_elbrete/',
+        tipo: 'davis'
       },
       {
         id: 'lavina',
         nombre: 'Finca San Antonio',
         localidad: 'La Viña - Salta',
-        lat:  -25.4725,
-        lng:   -65.567778,
-        url: 'https://intasalta.github.io/ema_lavina/'
+        lat: -25.4725,
+        lng: -65.567778,
+        url: 'https://intasalta.github.io/ema_lavina/',
+        tipo: 'davis'
       }
     ];
 
@@ -287,10 +311,146 @@
 
     const markersGroup = L.featureGroup().addTo(map);
 
-    // 4. FUNCIÓN PARA PARSEAR Y CARGAR DATOS
+    // =========================================================================
+    // PARSER CSV Y HELPERS
+    // =========================================================================
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    function parseCSV(text) {
+      const clean = text.replace(/^\uFEFF/, '').trim();
+      const lines = clean.split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const headers = parseCSVLine(lines[0]);
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const vals = parseCSVLine(lines[i]);
+        const row = {};
+        headers.forEach((h, idx) => {
+          row[h.trim()] = vals[idx] !== undefined ? vals[idx].trim() : '';
+        });
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function getVal(row, term) {
+      const lower = term.toLowerCase();
+      for (const k in row) {
+        if (k.toLowerCase().includes(lower)) {
+          const num = parseFloat(row[k]);
+          return isNaN(num) ? null : num;
+        }
+      }
+      return null;
+    }
+
+    // 4. FUNCIÓN PARA CARGAR DATOS SEGÚN TIPO DE ESTACIÓN
     async function cargarDatosEstacion(estacion) {
+      if (estacion.tipo === 'imetos') {
+        await cargarDatosImetos(estacion);
+      } else {
+        await cargarDatosDavis(estacion);
+      }
+    }
+
+    // CARGA PARA ESTACIONES IMETOS (Chaguaral y Mollinedo) DESDE CSV
+    async function cargarDatosImetos(estacion) {
       try {
-        const res = await fetch(estacion.url + 'index.html');
+        let response = null;
+        const urls = [
+          estacion.csvUrl + '?t=' + Date.now(),
+          estacion.localCsv + '?t=' + Date.now(),
+          '../' + estacion.localCsv + '?t=' + Date.now()
+        ];
+
+        for (const u of urls) {
+          try {
+            const r = await fetch(u);
+            if (r.ok) { response = r; break; }
+          } catch(e) {}
+        }
+
+        if (!response || !response.ok) throw new Error("No disponible");
+
+        const text = await response.text();
+        const rows = parseCSV(text);
+        if (!rows || rows.length === 0) throw new Error("Sin datos");
+
+        const latest = rows[0]; // El registro más reciente está en la primera fila
+
+        const tempVal = getVal(latest, 'Temperatura del aire HC') ?? getVal(latest, 'Temperatura');
+        const humVal = getVal(latest, 'Humedad relativa HC') ?? getVal(latest, 'Humedad');
+
+        // Lluvia acumulada 24hs (suma de las últimas 24 muestras)
+        const ultimas24 = rows.slice(0, Math.min(24, rows.length));
+        const rain24 = ultimas24.reduce((acc, r) => acc + (getVal(r, 'Precipitaci') || 0), 0);
+
+        const temp = tempVal !== null ? `${tempVal.toFixed(1)} °C` : '-- °C';
+        const hum = humVal !== null ? `${humVal.toFixed(0)} %` : '-- %';
+        const lluvia = `${rain24.toFixed(1)} mm`;
+
+        let ultimaAct = 'Sin registro';
+        if (latest['Fecha / Hora']) {
+          const parts = latest['Fecha / Hora'].split(' ');
+          const d = (parts[0] || '').split('-');
+          const time = (parts[1] || '').substring(0, 5);
+          const fechaFormateada = d.length === 3 ? `${d[2]}/${d[1]}/${d[0]}` : parts[0];
+          ultimaAct = `${fechaFormateada} - ${time} hs`;
+        }
+
+        actualizarInfoTarjeta(estacion, temp, hum, lluvia, ultimaAct);
+
+        // Actualizar marcador y popup
+        estacion.marker.setIcon(greenIcon);
+        estacion.marker.bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
+            <b style="font-size: 14px; color: #1e293b;">${estacion.nombre}</b><br>
+            <span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa (iMetos)</span><br>
+            <hr style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;">
+            <div>Temp: <b>${temp}</b> | Hum: <b>${hum}</b></div>
+            <div>Lluvia 24h: <b style="color: #0284c7;">${lluvia}</b></div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 4px;">
+              <b>Actualizado:</b> ${ultimaAct}
+            </div>
+            <div style="margin-top: 6px;">
+              <a href="${estacion.url}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">Ver Dashboard</a>
+            </div>
+          </div>
+        `);
+
+      } catch (err) {
+        console.error(`Error cargando iMetos ${estacion.id}:`, err);
+        marcarEstacionOffline(estacion);
+      }
+    }
+
+    // CARGA PARA ESTACIONES TRADICIONALES DAVIS DESDE SU INDEX.HTML
+    async function cargarDatosDavis(estacion) {
+      try {
+        const res = await fetch(estacion.url + 'index.html?t=' + Date.now());
         if (!res.ok) throw new Error('No disponible');
         const html = await res.text();
 
@@ -298,8 +458,8 @@
         const doc = parser.parseFromString(html, 'text/html');
 
         const valoresGrandes = doc.querySelectorAll('.text-3xl');
-        const temp = valoresGrandes[0] ? valoresGrandes[0].innerText.replace('\n', '') : '-- °C';
-        const hum = valoresGrandes[1] ? valoresGrandes[1].innerText.replace('\n', '') : '-- %';
+        const temp = valoresGrandes[0] ? valoresGrandes[0].innerText.replace('\n', '').trim() : '-- °C';
+        const hum = valoresGrandes[1] ? valoresGrandes[1].innerText.replace('\n', '').trim() : '-- %';
 
         const h2Hora = doc.querySelector('h2');
         const ultimaAct = h2Hora ? h2Hora.innerText.trim() : 'Sin registro';
@@ -312,104 +472,158 @@
           }
         });
 
-        // Actualizar datos en la tarjeta
-        document.getElementById(`temp-${estacion.id}`).innerText = temp;
-        document.getElementById(`hum-${estacion.id}`).innerText = hum;
-        document.getElementById(`lluvia-${estacion.id}`).innerText = lluvia;
-        document.getElementById(`time-${estacion.id}`).innerText = ultimaAct;
+        actualizarInfoTarjeta(estacion, temp, hum, lluvia, ultimaAct);
 
-        // CAMBIAR MARCADOR A VERDE (Activo)
         estacion.marker.setIcon(greenIcon);
-
-        // Actualizar Popup del marcador
-        // Actualizar Popup del marcador para estaciones activas
-		estacion.marker.bindPopup(`
-		  <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
-			<b style="font-size: 14px; color: #1e293b;">${estacion.nombre}</b><br>
-			<span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa</span><br>
-			<hr style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;">
-			<div>Temp: <b>${temp}</b> | Hum: <b>${hum}</b></div>
-			<div>Lluvia día: <b style="color: #0284c7;">${lluvia}</b></div>
-			<div style="font-size: 10px; color: #64748b; margin-top: 4px;">
-			  <b>Actualizado:</b> ${ultimaAct}
-			</div>
-			<div style="margin-top: 6px;">
-			  <a href="${estacion.url}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">Ver Dashboard</a>
-			</div>
-		  </div>
-		`);
+        estacion.marker.bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
+            <b style="font-size: 14px; color: #1e293b;">${estacion.nombre}</b><br>
+            <span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa</span><br>
+            <hr style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;">
+            <div>Temp: <b>${temp}</b> | Hum: <b>${hum}</b></div>
+            <div>Lluvia día: <b style="color: #0284c7;">${lluvia}</b></div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 4px;">
+              <b>Actualizado:</b> ${ultimaAct}
+            </div>
+            <div style="margin-top: 6px;">
+              <a href="${estacion.url}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">Ver Dashboard</a>
+            </div>
+          </div>
+        `);
 
       } catch (err) {
         console.error(`Error cargando ${estacion.id}:`, err);
-        
-        // CAMBIAR MARCADOR A ROJO (Inactivo)
-        estacion.marker.setIcon(redIcon);
-
-        // Actualizar etiqueta de la tarjeta
-        const statusElem = document.getElementById(`status-${estacion.id}`);
-        if (statusElem) {
-          statusElem.className = "text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20";
-          statusElem.innerText = "Sin conexión";
-        }
-
-        // Actualizar Popup
-        estacion.marker.bindPopup(`
-          <div style="font-family: sans-serif;">
-            <b style="font-size:14px">${estacion.nombre}</b><br>
-            <span style="color: #dc2626; font-weight: bold; font-size: 11px;">● Sin conexión</span><br>
-            <a href="${estacion.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-size:12px;">Intentar abrir Dashboard</a>
-          </div>
-        `);
+        marcarEstacionOffline(estacion);
       }
     }
 
-    // 5. GENERAR TARJETAS EN LA GRILLA E INICIALIZAR PINES EN EL MAPA
+    function actualizarInfoTarjeta(estacion, temp, hum, lluvia, ultimaAct) {
+      const elTemp = document.getElementById(`temp-${estacion.id}`);
+      const elHum = document.getElementById(`hum-${estacion.id}`);
+      const elLluvia = document.getElementById(`lluvia-${estacion.id}`);
+      const elTime = document.getElementById(`time-${estacion.id}`);
+      const elMini = document.getElementById(`mini-data-${estacion.id}`);
+      const statusElem = document.getElementById(`status-${estacion.id}`);
+
+      if (elTemp) elTemp.innerText = temp;
+      if (elHum) elHum.innerText = hum;
+      if (elLluvia) elLluvia.innerText = lluvia;
+      if (elTime) elTime.innerText = ultimaAct;
+
+      if (elMini) {
+        elMini.innerHTML = `
+          <div class="flex items-center gap-3 font-mono text-xs">
+            <span class="inline-flex items-center gap-1 font-bold text-slate-700 dark:text-slate-200">
+              <span class="text-red-500">🌡️</span> ${temp}
+            </span>
+            <span class="text-slate-300 dark:text-slate-600">•</span>
+            <span class="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+              <span class="text-blue-500">💧</span> ${hum}
+            </span>
+            <span class="text-slate-300 dark:text-slate-600">•</span>
+            <span class="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold">
+              <span class="text-sky-500">🌧️</span> ${lluvia}
+            </span>
+          </div>
+        `;
+      }
+
+      if (statusElem) {
+        statusElem.className = "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+        statusElem.innerText = "Online";
+      }
+    }
+
+    function marcarEstacionOffline(estacion) {
+      estacion.marker.setIcon(redIcon);
+      const statusElem = document.getElementById(`status-${estacion.id}`);
+      if (statusElem) {
+        statusElem.className = "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20";
+        statusElem.innerText = "Sin conexión";
+      }
+      const elMini = document.getElementById(`mini-data-${estacion.id}`);
+      if (elMini) {
+        elMini.innerHTML = `<span class="text-rose-500 font-medium text-[11px]">● Sin datos recientes</span>`;
+      }
+      estacion.marker.bindPopup(`
+        <div style="font-family: sans-serif;">
+          <b style="font-size:14px">${estacion.nombre}</b><br>
+          <span style="color: #dc2626; font-weight: bold; font-size: 11px;">● Sin conexión</span><br>
+          <a href="${estacion.url}" target="_blank" style="color: #0284c7; text-decoration: underline; font-size:12px;">Intentar abrir Dashboard</a>
+        </div>
+      `);
+    }
+
+    // =========================================================================
+    // 5. GENERAR TARJETAS EN LA GRILLA CON COMPRESIÓN Y EXPANSIÓN
+    // =========================================================================
     const grid = document.getElementById('grid-estaciones');
 
     estaciones.forEach(est => {
-      // Marcador inicial por defecto
+      // Marcador inicial
       est.marker = L.marker([est.lat, est.lng]).addTo(markersGroup)
         .bindPopup(`<b>${est.nombre}</b><br>Verificando estado...`);
 
       const cardHTML = `
-        <div id="card-${est.id}" class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between hover:border-sky-500/50 transition-all">
-          <div>
-            <div class="flex justify-between items-start mb-3">
+        <div id="card-${est.id}" class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between hover:border-sky-500/50 transition-all">
+          
+          <!-- CABECERA DE LA CAJITA (Click para colapsar/expandir) -->
+          <div class="cursor-pointer select-none" onclick="toggleTarjeta('${est.id}')">
+            <div class="flex justify-between items-start gap-2">
               <div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-base">${est.nombre}</h4>
-                <p class="text-xs text-slate-400">${est.localidad}</p>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="font-bold text-slate-800 dark:text-white text-base leading-tight">${est.nombre}</h4>
+                  ${est.tipo === 'imetos' ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-300 font-mono font-semibold border border-sky-500/20">iMetos</span>' : ''}
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">${est.localidad}</p>
               </div>
-              <span id="status-${est.id}" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                Online
-              </span>
+
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span id="status-${est.id}" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-500 border border-slate-500/20">
+                  Verificando...
+                </span>
+
+                <!-- Botón de expandir / comprimir -->
+                <button id="btn-toggle-${est.id}" type="button" aria-label="Expandir o comprimir" class="p-1 rounded-lg bg-slate-100 dark:bg-slate-700/60 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 transition-all" onclick="event.stopPropagation(); toggleTarjeta('${est.id}')">
+                  <i id="icon-toggle-${est.id}" data-feather="chevron-down" class="h-4 w-4 transition-transform duration-200"></i>
+                </button>
+              </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 my-4 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
-              <div>
-                <p class="text-[10px] text-slate-400 font-medium uppercase">Temp</p>
-                <p id="temp-${est.id}" class="text-lg font-extrabold text-slate-800 dark:text-white">-- °C</p>
-              </div>
-              <div>
-                <p class="text-[10px] text-slate-400 font-medium uppercase">Humedad</p>
-                <p id="hum-${est.id}" class="text-lg font-extrabold text-slate-800 dark:text-white">-- %</p>
-              </div>
-              <div>
-                <p class="text-[10px] text-slate-400 font-medium uppercase">Lluvia Día</p>
-                <p id="lluvia-${est.id}" class="text-lg font-extrabold text-blue-600 dark:text-blue-400">-- mm</p>
-              </div>
+            <!-- Mini resumen visible en estado comprimido -->
+            <div id="mini-data-${est.id}" class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700/50 text-xs text-slate-400 flex items-center">
+              Cargando valores...
             </div>
           </div>
 
-          <div>
-            <div class="flex justify-between items-center text-[11px] text-slate-400 mb-3">
+          <!-- CUERPO DETALLADO (Expandible) -->
+          <div id="body-${est.id}" class="hidden mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 space-y-3 transition-all">
+            <div class="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-900/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase">Temp</p>
+                <p id="temp-${est.id}" class="text-base sm:text-lg font-extrabold text-slate-800 dark:text-white">-- °C</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase">Humedad</p>
+                <p id="hum-${est.id}" class="text-base sm:text-lg font-extrabold text-slate-800 dark:text-white">-- %</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase">Lluvia Día</p>
+                <p id="lluvia-${est.id}" class="text-base sm:text-lg font-extrabold text-blue-600 dark:text-blue-400">-- mm</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-400">
               <span>Actualizado:</span>
               <span id="time-${est.id}" class="font-medium text-slate-600 dark:text-slate-300">Cargando...</span>
             </div>
+
             <a href="${est.url}" target="_blank" class="flex items-center justify-center gap-2 w-full py-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs rounded-xl transition-all shadow-sm">
               Ver Dashboard Completo <i data-feather="external-link" class="h-3.5 w-3.5"></i>
             </a>
           </div>
-        </div
+
+        </div>
       `;
       grid.insertAdjacentHTML('beforeend', cardHTML);
 
@@ -419,8 +633,41 @@
     if (estaciones.length > 0) {
       map.fitBounds(markersGroup.getBounds(), { padding: [30, 30] });
     }
-	
-	
+
+    // =========================================================================
+    // CONTROL DE TARJETAS EXPANDIBLES / COMPRIMIBLES
+    // =========================================================================
+    function toggleTarjeta(id) {
+      const body = document.getElementById(`body-${id}`);
+      const icon = document.getElementById(`icon-toggle-${id}`);
+      if (!body) return;
+      const isHidden = body.classList.contains('hidden');
+      if (isHidden) {
+        body.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      } else {
+        body.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      }
+    }
+
+    function expandirTodas() {
+      estaciones.forEach(est => {
+        const body = document.getElementById(`body-${est.id}`);
+        const icon = document.getElementById(`icon-toggle-${est.id}`);
+        if (body) body.classList.remove('hidden');
+        if (icon) icon.classList.add('rotate-180');
+      });
+    }
+
+    function comprimirTodas() {
+      estaciones.forEach(est => {
+        const body = document.getElementById(`body-${est.id}`);
+        const icon = document.getElementById(`icon-toggle-${est.id}`);
+        if (body) body.classList.add('hidden');
+        if (icon) icon.classList.remove('rotate-180');
+      });
+    }
 
     // 6. INICIALIZAR ICONOS Y MODO OSCURO
     feather.replace();
@@ -447,32 +694,23 @@
         localStorage.setItem('theme', 'dark');
       }
     });
-	// Manejo del Modal Informativo
-	const infoModalBtn = document.getElementById('info-modal-btn');
-	const infoModal = document.getElementById('info-modal');
-	const closeModalBtn = document.getElementById('close-modal-btn');
-	const confirmModalBtn = document.getElementById('confirm-modal-btn');
 
-	function openModal() {
-	  infoModal.classList.remove('hidden');
-	}
+    // Manejo del Modal Informativo
+    const infoModalBtn = document.getElementById('info-modal-btn');
+    const infoModal = document.getElementById('info-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const confirmModalBtn = document.getElementById('confirm-modal-btn');
 
-	function closeModal() {
-	  infoModal.classList.add('hidden');
-	}
+    function openModal() { infoModal.classList.remove('hidden'); }
+    function closeModal() { infoModal.classList.add('hidden'); }
 
-	infoModalBtn.addEventListener('click', openModal);
-	closeModalBtn.addEventListener('click', closeModal);
-	confirmModalBtn.addEventListener('click', closeModal);
+    infoModalBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    confirmModalBtn.addEventListener('click', closeModal);
 
-	// Cerrar si se hace clic fuera de la caja del modal
-	infoModal.addEventListener('click', function(e) {
-	  if (e.target === infoModal) {
-		closeModal();
-	  }
-	});
-	
-	
+    infoModal.addEventListener('click', function(e) {
+      if (e.target === infoModal) closeModal();
+    });
   </script>
 </body>
 </html>
