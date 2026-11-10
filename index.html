@@ -250,7 +250,7 @@
         localidad: 'Las Lajitas - Salta',
         lat: -24.743391958553925, 
         lng: -64.2493717369287,
-        url: 'https://intasalta.github.io/ema_lajitas/',
+        url: 'https://intasalta.github.io/emas',
         tipo: 'davis'
       },
       {
@@ -279,6 +279,17 @@
         lng: -65.567778,
         url: 'https://intasalta.github.io/ema_lavina/',
         tipo: 'davis'
+      },
+      {
+        id: 'sec5085',
+        nombre: 'Colegio Sec. N° 5085',
+        localidad: 'Gral. Güemes - Salta',
+        lat: -24.6708,
+        lng: -65.0498,
+        url: 'https://intasalta.github.io/ema_5085mm/',
+        tipo: 'ecowitt',
+        csvUrl: 'https://raw.githubusercontent.com/intasalta/daza/main/364053_daily_station_data.csv',
+        fallbackCsv: 'https://intasalta.github.io/ema_5085mm/364053_daily_station_data.csv'
       }
     ];
 
@@ -371,6 +382,8 @@
     async function cargarDatosEstacion(estacion) {
       if (estacion.tipo === 'imetos') {
         await cargarDatosImetos(estacion);
+      } else if (estacion.tipo === 'ecowitt') {
+        await cargarDatosEcowitt(estacion);
       } else {
         await cargarDatosDavis(estacion);
       }
@@ -504,6 +517,111 @@
       }
     }
 
+    // CARGA PARA ESTACIONES ECOWITT (Colegio Sec. N° 5085) DESDE CSV
+    async function cargarDatosEcowitt(estacion) {
+      try {
+        let response = null;
+        const urls = [
+          estacion.csvUrl + '?t=' + Date.now(),
+          (estacion.fallbackCsv || '') + '?t=' + Date.now(),
+          estacion.url + '364053_daily_station_data.csv?t=' + Date.now()
+        ].filter(u => u && !u.startsWith('?'));
+
+        for (const u of urls) {
+          try {
+            const r = await fetch(u);
+            if (r.ok) { response = r; break; }
+          } catch(e) {}
+        }
+
+        if (!response || !response.ok) throw new Error("No disponible");
+
+        const text = await response.text();
+        const rawLines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+        if (rawLines.length < 3) throw new Error("Sin datos suficientes");
+
+        const h0 = rawLines[0].split(',').map(s => s.trim().toLowerCase());
+        const h1 = rawLines[1].split(',').map(s => s.trim().toLowerCase());
+
+        function findCol(terms, groupTerms) {
+          if (groupTerms && groupTerms.length > 0) {
+            for (let i = 0; i < h1.length; i++) {
+              const gMatch = groupTerms.some(g => (h0[i] || '').includes(g));
+              const cMatch = terms.some(t => (h1[i] || '').includes(t));
+              if (gMatch && cMatch) return i;
+            }
+          }
+          for (let i = 0; i < h1.length; i++) {
+            if (terms.some(t => (h1[i] || '').includes(t))) return i;
+          }
+          for (let i = 0; i < h0.length; i++) {
+            if (terms.some(t => (h0[i] || '').includes(t))) return i;
+          }
+          return -1;
+        }
+
+        const colTemp = findCol(['temperature'], ['outdoor']);
+        const colHum = findCol(['humidity'], ['outdoor']);
+        const colDailyRain = findCol(['daily']);
+
+        // Buscar el último registro válido con temperatura de abajo hacia arriba
+        let latestRow = null;
+        for (let i = rawLines.length - 1; i >= 2; i--) {
+          const parts = rawLines[i].split(',');
+          if (parts.length < 5) continue;
+          const tVal = colTemp >= 0 ? parts[colTemp].trim() : '';
+          if (tVal && tVal !== '-' && tVal !== '--' && !isNaN(parseFloat(tVal))) {
+            latestRow = parts;
+            break;
+          }
+        }
+
+        if (!latestRow) throw new Error("Sin filas válidas");
+
+        const timeFull = latestRow[0] ? latestRow[0].trim() : '';
+        const tempNum = colTemp >= 0 ? parseFloat(latestRow[colTemp]) : null;
+        const humNum = colHum >= 0 ? parseFloat(latestRow[colHum]) : null;
+        const rainNum = colDailyRain >= 0 ? parseFloat(latestRow[colDailyRain]) : 0;
+
+        const temp = tempNum !== null && !isNaN(tempNum) ? `${tempNum.toFixed(1)} °C` : '-- °C';
+        const hum = humNum !== null && !isNaN(humNum) ? `${Math.round(humNum)} %` : '-- %';
+        const lluvia = rainNum !== null && !isNaN(rainNum) ? `${rainNum.toFixed(1)} mm` : '0.0 mm';
+
+        let ultimaAct = 'Sin registro';
+        let horaCorta = '--:--';
+        if (timeFull) {
+          const timeParts = timeFull.split(' ');
+          const d = (timeParts[0] || '').split('-');
+          const time = (timeParts[1] || '').substring(0, 5);
+          const fechaFormateada = d.length === 3 ? `${d[2]}/${d[1]}/${d[0]}` : timeParts[0];
+          ultimaAct = `${fechaFormateada} - ${time} hs`;
+          horaCorta = `${time} hs`;
+        }
+
+        actualizarInfoTarjeta(estacion, temp, hum, lluvia, ultimaAct, horaCorta);
+
+        estacion.marker.setIcon(greenIcon);
+        estacion.marker.bindPopup(`
+          <div style="font-family: sans-serif; font-size: 12px; line-height: 1.4;">
+            <b style="font-size: 14px; color: #1e293b;">${estacion.nombre}</b><br>
+            <span style="color: #16a34a; font-weight: bold; font-size: 11px;">● Activa (Ecowitt)</span><br>
+            <hr style="margin: 4px 0; border: 0; border-top: 1px solid #e2e8f0;">
+            <div>Temp: <b>${temp}</b> | Hum: <b>${hum}</b></div>
+            <div>Lluvia día: <b style="color: #0284c7;">${lluvia}</b></div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 4px;">
+              <b>Actualizado:</b> ${ultimaAct}
+            </div>
+            <div style="margin-top: 6px;">
+              <a href="${estacion.url}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">Ver Dashboard</a>
+            </div>
+          </div>
+        `);
+      } catch (err) {
+        console.error(`Error cargando Ecowitt ${estacion.id}:`, err);
+        marcarEstacionOffline(estacion);
+      }
+    }
+
     function actualizarInfoTarjeta(estacion, temp, hum, lluvia, ultimaAct, horaCorta) {
       const elTemp = document.getElementById(`temp-${estacion.id}`);
       const elHum = document.getElementById(`hum-${estacion.id}`);
@@ -590,6 +708,7 @@
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h4 class="font-bold text-slate-800 dark:text-white text-base leading-tight">${est.nombre}</h4>
                   ${est.tipo === 'imetos' ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-300 font-mono font-semibold border border-sky-500/20">iMetos</span>' : ''}
+                  ${est.tipo === 'ecowitt' ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 font-mono font-semibold border border-emerald-500/20">Ecowitt</span>' : ''}
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">${est.localidad}</p>
               </div>
